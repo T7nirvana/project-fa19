@@ -29,11 +29,9 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     print(msg)
     print(G.edges())
     print(G.nodes())
-    import matplotlib.pyplot as plt;
-    import matplotlib;
-    plt.figure()
-    nx.draw_random(G)
-    plt.show()
+
+    show(G)
+    
     edges = adjacency_matrix_to_edge_list(adjacency_matrix)
 
     # print(adjacency_matrix)

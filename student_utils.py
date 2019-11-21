@@ -1,6 +1,15 @@
 import networkx as nx
 import numpy as np
 
+# new utils 
+import matplotlib.pyplot as plt;
+import matplotlib;
+def show(G):
+    plt.figure()
+    nx.draw_random(G)
+    plt.show()
+
+# official utils
 
 def decimal_digits_check(number):
     number = str(number)
