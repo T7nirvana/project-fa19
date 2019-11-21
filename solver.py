@@ -25,8 +25,22 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         A dictionary mapping drop-off location to a list of homes of TAs that got off at that particular location
         NOTE: both outputs should be in terms of indices not the names of the locations themselves
     """
-    pass
+    G, msg = adjacency_matrix_to_graph(adjacency_matrix)
+    print(msg)
+    print(G.edges())
+    print(G.nodes())
+    import matplotlib.pyplot as plt;
+    import matplotlib;
+    plt.figure()
+    nx.draw_random(G)
+    plt.show()
+    edges = adjacency_matrix_to_edge_list(adjacency_matrix)
 
+    # print(adjacency_matrix)
+    loc = list_of_locations
+    car_path = [0,1,3,6,0]
+    drop_offs = {0:[4], 1: [2, 5], 3: [3]}
+    return car_path, drop_offs
 """
 ======================================================================
    No need to change any code below this line
@@ -58,6 +72,7 @@ def convertToFile(path, dropoff_mapping, path_to_file, list_locs):
 def solve_from_file(input_file, output_directory, params=[]):
     print('Processing', input_file)
 
+    # import pdb; pdb.set_trace()
     input_data = utils.read_file(input_file)
     num_of_locations, num_houses, list_locations, list_houses, starting_car_location, adjacency_matrix = data_parser(input_data)
     car_path, drop_offs = solve(list_locations, list_houses, starting_car_location, adjacency_matrix, params=params)
@@ -84,6 +99,7 @@ if __name__=="__main__":
     parser.add_argument('output_directory', type=str, nargs='?', default='.', help='The path to the directory where the output should be written')
     parser.add_argument('params', nargs=argparse.REMAINDER, help='Extra arguments passed in')
     args = parser.parse_args()
+    # print(args.input)
     output_directory = args.output_directory
     if args.all:
         input_directory = args.input
