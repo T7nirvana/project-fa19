@@ -6,25 +6,22 @@ ua = string.ascii_uppercase
 script_path = os.path.abspath(__file__)
 script_dir = script_path[:script_path.rfind("algs")]
 io_path = script_dir + "io/"
-print(io_path)
 
 def random_name(n):
 	"""
 	n is number of name
 	"""
-	name_set = set()
-	while True:
-		rand_name_len = random.randint(0, 10)
-		name = ua[random.randint(0, 25)]
-		for i in range(rand_name_len):
-			name  = name + la[random.randint(0, 25)]
-		if name is not "Soda":
-			name_set.add(name)
-		if len(name_set) == n-1:
-			break
+	name_set = set(["Soda"])
 
+	while True:
+		rand_name_len = random.randint(3, 10) # 3 <= len <= 10
+		name = ua[random.randint(0, 25)]
+		for _ in range(rand_name_len):
+			name  = name + la[random.randint(0, 25)]
+		name_set.add(name)
+		if len(name_set) == n:
+			break
 	name_list = list(name_set)
-	name_list.insert(0, "Soda")
 	return name_list
 
 def random_home(name_list, home_num):
