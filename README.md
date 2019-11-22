@@ -8,6 +8,12 @@ To run solver:
 or 
 `python solver.py --all inputs outputs`
 
-To run validater
-`python input_validator.py inputs outputs`
-same for `--all` and `output_validator.py`
+To run input validater
+`python input_validator.py inputs/*.in`
+or 
+`python input_validator.py --all inputs`
+
+To run output validater
+`python output_validator.py inputs/*.in outputs/*.in `
+or 
+`python input_validator.py --all inputs outputs`
