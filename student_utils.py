@@ -9,6 +9,41 @@ def show(G):
     nx.draw_random(G)
     plt.show()
 
+def graph_to_matrix(G):
+    node_num = len(G)
+    mat = ['x' for _ in range(node_num*node_num)]
+    for u,v,weight in G.edges.data('weight'):
+        # print(u)
+        # print(v)
+        # print(str(weight))
+        mat[u*node_num + v] = str(weight)
+        mat[v*node_num + u] = str(weight)
+        
+    mat_str=""
+    for i in range(node_num):
+        for j in range(node_num):
+            mat_str = mat_str + mat[i*node_num + j] + ' '
+        mat_str = mat_str + '\n'
+    return mat_str
+
+
+
+    # node_weights = [adjacency_matrix[i][i] for i in range(len(adjacency_matrix))]
+    # adjacency_matrix_formatted = [[0 if entry == 'x' else entry for entry in row] for row in adjacency_matrix]
+
+    # for i in range(len(adjacency_matrix_formatted)):
+    #     adjacency_matrix_formatted[i][i] = 0
+
+    # G = nx.convert_matrix.from_numpy_matrix(np.matrix(adjacency_matrix_formatted))
+
+    # message = ''
+
+    # for node, datadict in G.nodes.items():
+    #     if node_weights[node] != 'x':
+    #         message += 'The location {} has a road to itself. This is not allowed.\n'.format(node)
+    #     datadict['weight'] = node_weights[node]
+
+    # return G, message
 # official utils
 
 def decimal_digits_check(number):
