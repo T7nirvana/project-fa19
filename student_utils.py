@@ -26,7 +26,17 @@ def graph_to_matrix(G):
         mat_str = mat_str + '\n'
     return mat_str
 
+# def random_metric_graph(n, pos = None):
+#     G = nx.Graph()
+#     G.add_nodes_from(range(n))
+#     # print(len(G))
+#     if pos is None:
+#         pos = {v: [random.random()*1000 for _ in range(2)] for v in range(n)}
 
+#     print(pos)
+#     nx.set_node_attributes(G, pos, 'pos')
+
+#     return G
 
     # node_weights = [adjacency_matrix[i][i] for i in range(len(adjacency_matrix))]
     # adjacency_matrix_formatted = [[0 if entry == 'x' else entry for entry in row] for row in adjacency_matrix]
@@ -89,7 +99,11 @@ def is_metric(G):
     shortest = dict(nx.floyd_warshall(G))
     for u, v, datadict in G.edges(data=True):
         if abs(shortest[u][v] - datadict['weight']) >= 0.00001:
+            # print("w%s"%datadict['weight'])
+            # print("s%s"%shortest[u][v])
             return False
+            # print(u)
+            # print(v)
     return True
 
 
