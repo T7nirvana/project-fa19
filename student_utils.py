@@ -117,6 +117,10 @@ def adjacency_matrix_to_edge_list(adjacency_matrix):
 
 
 def is_valid_walk(G, closed_walk):
+    '''
+    each edges taken actually can be found in the graph
+    Notice, A->A is not valid tho
+    '''
     return all([(closed_walk[i], closed_walk[i+1]) in G.edges for i in range(len(closed_walk) - 1)])
 
 

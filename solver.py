@@ -26,19 +26,23 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         NOTE: both outputs should be in terms of indices not the names of the locations themselves
     """
     G, msg = adjacency_matrix_to_graph(adjacency_matrix)
-    print(msg)
-    print(G.edges())
-    print(G.nodes())
-
-    show(G)
-    
-    edges = adjacency_matrix_to_edge_list(adjacency_matrix)
-
-    # print(adjacency_matrix)
-    loc = list_of_locations
-    car_path = [0,1,3,6,0]
-    drop_offs = {0:[4], 1: [2, 5], 3: [3]}
+    # edges = adjacency_matrix_to_edge_list(adjacency_matrix)
+    #----------------#
+    # Naive solution here
+    #----------------#
+    soda_idx = list_of_locations.index(starting_car_location)
+    home_idxs = [list_of_locations.index(home) for home in list_of_homes]
+    random_neighbor = list(G.neighbors(soda_idx))[0]
+    car_path = [soda_idx, random_neighbor, soda_idx]
+    drop_offs = {random_neighbor:home_idxs}
     return car_path, drop_offs
+    
+    # loc = list_of_locations
+    # car_path = [0,1,3,6,0]
+    # drop_offs = {0:[4], 1: [2, 5], 3: [3]}
+    # return car_path, drop_offs
+
+
 """
 ======================================================================
    No need to change any code below this line

@@ -97,6 +97,7 @@ def tests(input_data, output_data, params=[]):
         cost = 'infinite'
 
     car_cycle = convert_locations_to_indices(car_cycle, list_of_locations)
+    print(car_cycle)
 
     if (car_cycle[0] != car_cycle[-1]):
         message += "Your car must start and end at the same location.\n"
