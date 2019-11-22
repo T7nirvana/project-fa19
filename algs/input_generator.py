@@ -1,7 +1,12 @@
 import string
+import os
 import random
 la = string.ascii_lowercase
 ua = string.ascii_uppercase
+script_path = os.path.abspath(__file__)
+script_dir = script_path[:script_path.rfind("algs")]
+io_path = script_dir + "io/"
+print(io_path)
 
 def random_name(n):
 	"""
@@ -57,6 +62,10 @@ def random_input(m, n):
 	return in_str
 
 
+def save_file(m, n):
+	in_str = random_input(m, n)
+	with open(io_path + "%s.in"%m, 'w+') as f:
+		f.write(in_str)
 
 
 
@@ -68,4 +77,6 @@ if __name__ == '__main__':
 	print(nlist)
 
 	print(random_input(10, 3))
+
+	save_file(10, 3)
 
