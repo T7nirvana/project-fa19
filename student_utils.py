@@ -4,6 +4,7 @@ import numpy as np
 # new utils 
 import matplotlib.pyplot as plt;
 import matplotlib;
+
 def show(G):
     plt.figure()
     nx.draw_random(G)
@@ -54,6 +55,8 @@ def graph_to_matrix(G):
     #     datadict['weight'] = node_weights[node]
 
     # return G, message
+
+    
 # official utils
 
 def decimal_digits_check(number):
