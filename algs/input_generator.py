@@ -6,7 +6,7 @@ la = string.ascii_lowercase
 ua = string.ascii_uppercase
 script_path = os.path.abspath(__file__)
 project_dir = script_path[:script_path.rfind("algs")]
-io_path = project_dir + "io/"
+input_path = project_dir + "input/"
 
 import sys
 sys.path.append(project_dir)
@@ -94,7 +94,7 @@ def random_input(m, n):
 
 def save_file(m, n):
 	in_str = random_input(m, n)
-	with open(io_path + "%s.in"%m, 'w+') as f:
+	with open(input_path + "%s.in"%m, 'w+') as f:
 		f.write(in_str)
 
 
