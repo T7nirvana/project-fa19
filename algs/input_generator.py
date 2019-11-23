@@ -69,7 +69,7 @@ def adjacent_matrix(m,n, ratio):
 	# and we can remove and add nodes and edges after this as we will
 
 	remove_random_edges(G, ratio)
-	show(G)
+	#show(G)
 	node_num = len(G)
 	# for u,v in G.edges:
 	# 	dis = L2_dis(G.nodes[u]['pos'],G.nodes[v]['pos'])
