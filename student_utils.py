@@ -1,63 +1,6 @@
 import networkx as nx
 import numpy as np
 
-# new utils 
-import matplotlib.pyplot as plt;
-import matplotlib;
-
-def show(G):
-    plt.figure()
-    nx.draw_random(G)
-    plt.show()
-
-def graph_to_matrix(G):
-    node_num = len(G)
-    mat = ['x' for _ in range(node_num*node_num)]
-    for u,v,weight in G.edges.data('weight'):
-        # print(u)
-        # print(v)
-        # print(str(weight))
-        mat[u*node_num + v] = str(weight)
-        mat[v*node_num + u] = str(weight)
-        
-    mat_str=""
-    for i in range(node_num):
-        for j in range(node_num):
-            mat_str = mat_str + mat[i*node_num + j] + ' '
-        mat_str = mat_str + '\n'
-    return mat_str
-
-# def random_metric_graph(n, pos = None):
-#     G = nx.Graph()
-#     G.add_nodes_from(range(n))
-#     # print(len(G))
-#     if pos is None:
-#         pos = {v: [random.random()*1000 for _ in range(2)] for v in range(n)}
-
-#     print(pos)
-#     nx.set_node_attributes(G, pos, 'pos')
-
-#     return G
-
-    # node_weights = [adjacency_matrix[i][i] for i in range(len(adjacency_matrix))]
-    # adjacency_matrix_formatted = [[0 if entry == 'x' else entry for entry in row] for row in adjacency_matrix]
-
-    # for i in range(len(adjacency_matrix_formatted)):
-    #     adjacency_matrix_formatted[i][i] = 0
-
-    # G = nx.convert_matrix.from_numpy_matrix(np.matrix(adjacency_matrix_formatted))
-
-    # message = ''
-
-    # for node, datadict in G.nodes.items():
-    #     if node_weights[node] != 'x':
-    #         message += 'The location {} has a road to itself. This is not allowed.\n'.format(node)
-    #     datadict['weight'] = node_weights[node]
-
-    # return G, message
-
-    
-# official utils
 
 def decimal_digits_check(number):
     number = str(number)
@@ -102,11 +45,7 @@ def is_metric(G):
     shortest = dict(nx.floyd_warshall(G))
     for u, v, datadict in G.edges(data=True):
         if abs(shortest[u][v] - datadict['weight']) >= 0.00001:
-            # print("w%s"%datadict['weight'])
-            # print("s%s"%shortest[u][v])
             return False
-            # print(u)
-            # print(v)
     return True
 
 
@@ -120,10 +59,8 @@ def adjacency_matrix_to_edge_list(adjacency_matrix):
 
 
 def is_valid_walk(G, closed_walk):
-    '''
-    each edges taken actually can be found in the graph
-    Notice, A->A is not valid tho
-    '''
+    if len(closed_walk) == 2:
+        return closed_walk[0] == closed_walk[1]
     return all([(closed_walk[i], closed_walk[i+1]) in G.edges for i in range(len(closed_walk) - 1)])
 
 
@@ -152,7 +89,10 @@ def cost_of_solution(G, car_cycle, dropoff_mapping):
             car_cycle = []
         else:
             car_cycle = get_edges_from_path(car_cycle[:-1]) + [(car_cycle[-2], car_cycle[-1])]
-        driving_cost = sum([G.edges[e]['weight'] for e in car_cycle]) * 2 / 3
+        if len(car_cycle) != 1:
+            driving_cost = sum([G.edges[e]['weight'] for e in car_cycle]) * 2 / 3
+        else:
+            driving_cost = 0
         walking_cost = 0
         shortest = dict(nx.floyd_warshall(G))
 
