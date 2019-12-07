@@ -196,7 +196,7 @@ def solve_from_file(input_file, output_directory, params=[]):
 
 def solve_all(input_directory, output_directory, params=[]):
     input_files = utils.get_files_with_extension(input_directory, 'in')
-
+    input_files=input_files[250:]
     for input_file in input_files:
         solve_from_file(input_file, output_directory, params=params)
 
