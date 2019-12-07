@@ -200,8 +200,18 @@ def solve_from_file(input_file, output_directory, params=[]):
 
 def solve_all(input_directory, output_directory, params=[]):
     input_files = utils.get_files_with_extension(input_directory, 'in')
-    input_files=input_files[250:]
+    # with open("./new_input" ,'r') as f:
+    #     name = []
+    #     while True:
+    #         line = f.readline()
+    #         if not line:
+    #             break
+    #         name.append(line[:line.rfind(".in")] + ".in")
+    # # print(name)
+    # input_files=input_files[250:]
     for input_file in input_files:
+        # if input_file not in name:
+        #     continue
         solve_from_file(input_file, output_directory, params=params)
 
 
