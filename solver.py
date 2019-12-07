@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import pandas as pd
+from ACO import *
 
 sys.path.append('..')
 sys.path.append('../..')
@@ -45,18 +46,18 @@ def get_neighborhood(center, radix, domain):
 #
 #         gaussian=get_neighborhood(winner_idx,size//10,len(network))
 
-def tsp(dropoff_set,tsp_matrix):
-    cycle=[]
-    cycle.append(0)
-    this_index=dropoff_set.index(0)
-    next=min(tsp_matrix[this_index]).argmin()
-    while len(cycle)<len(dropoff_set):
-        cycle.append(dropoff_set[next])
-        this_index=dropoff_set.index(next)
-        next=min(tsp_matrix[this_index].argmin())
-
-    cycle.append(0)
-    return cycle
+# def tsp(dropoff_set,tsp_matrix):
+#     cycle=[]
+#     cycle.append(0)
+#     this_index=dropoff_set.index(0)
+#     next=min(tsp_matrix[this_index]).argmin()
+#     while len(cycle)<len(dropoff_set):
+#         cycle.append(dropoff_set[next])
+#         this_index=dropoff_set.index(next)
+#         next=min(tsp_matrix[this_index].argmin())
+#
+#     cycle.append(0)
+#     return cycle
 
 
 def name2indice(list_of_location, list_of_name):
@@ -77,20 +78,20 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         NOTE: both outputs should be in terms of indices not the names of the locations themselves
     """
     home_index = name2indice(list_of_locations, list_of_homes)
-    car_cycle = []
-
+    startpoint=list_of_locations.index(starting_car_location)
+    car_cycle = [startpoint]
     G, _ = adjacency_matrix_to_graph(adjacency_matrix)
     predecessors, shortest = nx.floyd_warshall_predecessor_and_distance(G, 'weight')
     shortest=dict(shortest)
-    disFstart = np.array([shortest[0][i] for i in range(len(list_of_locations))]).reshape(-1, 1)
+    disFstart = np.array([shortest[startpoint][i] for i in range(len(list_of_locations))]).reshape(-1, 1)
     clusters = int(round(0.25 * len(home_index)))
     while True:
-        km = KMeans(n_clusters=clusters, init='random')  # !!!可以加一个参数kmeans的聚类个数
+        km = KMeans(n_clusters=clusters, init='k-means++')  # !!!可以加一个参数kmeans的聚类个数
         disFstart_new = km.fit_transform(disFstart)
         labels = km.labels_
         # centers = km.cluster_centers_
         home_label_set = set()
-        for home in home_index:
+        for home in range(len(home_index)):
             if labels[home] not in home_label_set:
                 home_label_set.add(labels[home])
 
@@ -98,11 +99,11 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
 
         for loc in range(len(disFstart)):
             if labels[loc] in route_set:
-                if (route_set[labels[loc]] is None) or (abs(disFstart_new[loc]) < route_set[labels[loc]]):
+                if (route_set[labels[loc]] is None) or (abs(disFstart_new[loc][labels[loc]]) < route_set[labels[loc]]):
                     route_set[labels[loc]] = loc
 
-        dropoff_set = route_set.values() if route_set.has_key(0) else route_set.values().append(0)  # 必须包含起点
-        tsp_matrix = shortest[dropoff_set][:dropoff_set]
+        dropoff_set = np.fromiter(route_set.values(),dtype=int) if (startpoint in route_set.values()) else np.append(np.fromiter(route_set.values(),dtype=int),startpoint)  # 必须包含起点
+        tsp_matrix = np.array([[shortest[i][q] for q in dropoff_set] for i in dropoff_set])
         tsp_G, _ = adjacency_matrix_to_graph(tsp_matrix)
         # for u, v, weight in G.edges.data('weight'):
         #     ...
@@ -110,25 +111,38 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         #         ...  # Do something useful with the edges
         #     ...
         #     pass
-        for u, v, weight in tsp_G.edges.data('weight'):
-            if weight == 0:
-                tsp_G.remove_edge(u, v)
+
+        # for u, v, weight in tsp_G.edges.data('weight'):
+        #     if weight == 0:
+        #         tsp_G.remove_edge(u, v)
 
         if nx.is_connected(tsp_G):
             break
 
-    dropoff_mapping = {}.fromkeys(dropoff_set, [])
-    for home in home_index:
-        dropoff_mapping[route_set[labels[home]]].append(home)
+   # dropoff_mapping = {}.fromkeys(dropoff_set, [])
+    dropoff_mapping={k: [] for k in dropoff_set}
+    if startpoint in home_index:
+        dropoff_mapping[startpoint].append(startpoint)
+        home_index.remove(startpoint)
+    for home in range(len(home_index)):
+        #dropoff_mapping[route_set[labels[home]]].append(home_index[home])
+        clusters_id=labels[home]
+        drop_index=route_set[clusters_id]
+        dropoff_mapping[drop_index].append(home_index[home])
 
-    no_edge_list=np.argmin(tsp_matrix, axis=0)
-    tsp_matrix[no_edge_list]=float('inf')
+ #   no_edge_list=np.argmin(tsp_matrix, axis=0)
+#    tsp_matrix[no_edge_list]=float('inf')
     # locations=pd.DataFrame(data={"index":range(len(dropoff_set))},index=dropoff_set)
-    dropoff_order = tsp(dropoff_set,tsp_matrix).tolist()
+    dropoff_order = TSP(len(dropoff_set),tsp_matrix)
+    cluster_order=[]
+    for i in dropoff_order:
+        cluster_order.append(dropoff_set[i])
 
-    cycle = get_edges_from_path(dropoff_order[:-1]) + [(dropoff_order[-2], car_cycle[-1])]
+    dropoff_order=cluster_order[cluster_order.index(startpoint):]+cluster_order[0:cluster_order.index(startpoint)]
+    dropoff_order.append(startpoint)
+    cycle = get_edges_from_path(dropoff_order[:-1]) + [(dropoff_order[-2], dropoff_order[-1])]
     for (u, v) in cycle:
-        car_cycle.append(nx.reconstruct_path(u, v, predecessors))
+        car_cycle.extend(nx.reconstruct_path(u, v, predecessors)[1:])
 
     return car_cycle, dropoff_mapping
 
