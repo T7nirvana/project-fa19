@@ -84,7 +84,7 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
     predecessors, shortest = nx.floyd_warshall_predecessor_and_distance(G, 'weight')
     shortest=dict(shortest)
     disFstart = np.array([shortest[startpoint][i] for i in range(len(list_of_locations))]).reshape(-1, 1)
-    clusters = int(round(0.25 * len(home_index)))
+    clusters = max(int(round(0.25 * len(home_index))),1)
     while True:
         km = KMeans(n_clusters=clusters, init='k-means++')  # !!!可以加一个参数kmeans的聚类个数
         disFstart_new = km.fit_transform(disFstart)
