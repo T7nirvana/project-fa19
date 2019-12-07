@@ -130,6 +130,10 @@ def solve(list_of_locations, list_of_homes, starting_car_location, adjacency_mat
         drop_index=route_set[clusters_id]
         dropoff_mapping[drop_index].append(home_index[home])
 
+    for key in list(dropoff_mapping.keys()):
+        if not dropoff_mapping.get(key):
+            del dropoff_mapping[key]
+
  #   no_edge_list=np.argmin(tsp_matrix, axis=0)
 #    tsp_matrix[no_edge_list]=float('inf')
     # locations=pd.DataFrame(data={"index":range(len(dropoff_set))},index=dropoff_set)
